@@ -3,7 +3,7 @@ import type { ElementType, HTMLAttributes, ReactNode } from "react";
 
 export type HeadingLevel = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
-export interface CardProps extends HTMLAttributes<HTMLElement> {
+export interface CardProps extends Omit<HTMLAttributes<HTMLElement>, "title"> {
   as?: ElementType;
   title?: ReactNode;
   titleLevel?: HeadingLevel;
