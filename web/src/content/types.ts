@@ -72,6 +72,8 @@ export interface AnswerStep {
   type: "answer";
   prompt: string;
   criteria: Criterion[];
+  checking?: string;
+  hints?: string[];
 }
 
 export type Step = ExplainStep | AnswerStep;
@@ -134,3 +136,6 @@ export interface StepResult {
   results: CriterionResult[];
   reason_code?: string;
 }
+
+/** What a page may learn from a check: pass or fail and the authored reason code, never the criterion. */
+export type AnswerCheck = Pick<StepResult, "passed" | "reason_code">;
