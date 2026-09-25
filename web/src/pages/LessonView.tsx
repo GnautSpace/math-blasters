@@ -23,7 +23,7 @@ export function LessonView() {
   }
 
   return (
-    <Card as="section" title={lesson.title}>
+    <Card as="section" title={lesson.title} titleVariant="heading">
       <LessonStepper lesson={lesson} />
     </Card>
   );

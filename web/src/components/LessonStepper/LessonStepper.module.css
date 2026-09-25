@@ -12,8 +12,9 @@
   width: 100%;
 }
 
+/* A progress label, so it stays quieter than the page's own title. */
 .heading {
-  font-size: var(--font-size-md, 1rem);
+  font-size: 1rem;
   font-weight: 700;
   margin: var(--space-2) 0 0;
   color: var(--text-muted);
