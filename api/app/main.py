@@ -23,7 +23,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 
 from app.config import get_settings
-from app.routers import health
+from app.routers import auth, health
 from app.schemas import ErrorDetail, ErrorEnvelope
 
 
@@ -162,6 +162,7 @@ def create_app() -> FastAPI:
 
     limiter = Limiter(key_func=get_remote_address)
     app.state.limiter = limiter
+    app.include_router(auth.router, prefix="/api")
 
     return app
 
