@@ -467,4 +467,36 @@ describe("LessonStepper Component", () => {
     await user.click(nextBtn);
     await expectNoA11yViolations(container);
   });
+
+  it("calls onPassed once when the lesson passes, not per step or per render", async () => {
+    const user = userEvent.setup();
+    const twoAnswers: PageLesson = {
+      ...mockLesson,
+      steps: [
+        { type: "answer", prompt: "Calculate 1 + 1" },
+        { type: "answer", prompt: "Calculate 2 + 2" },
+      ],
+    };
+    const onPassed = vi.fn();
+    const { rerender } = render(
+      <LessonStepper lesson={twoAnswers} checker={() => ({ passed: true })} onPassed={onPassed} />,
+    );
+
+    await user.type(screen.getByRole("spinbutton", { name: /your answer/i }), "2");
+    await user.click(screen.getByRole("button", { name: /submit/i }));
+    await waitFor(() => expect(screen.getByRole("button", { name: /^next$/i })).toBeEnabled());
+    expect(onPassed).not.toHaveBeenCalled();
+
+    await user.click(screen.getByRole("button", { name: /^next$/i }));
+    await user.type(screen.getByRole("spinbutton", { name: /your answer/i }), "4");
+    await user.click(screen.getByRole("button", { name: /submit/i }));
+    await waitFor(() => expect(onPassed).toHaveBeenCalledTimes(1));
+
+    // A new callback identity and further navigation never re-fire it.
+    rerender(
+      <LessonStepper lesson={twoAnswers} checker={() => ({ passed: true })} onPassed={() => onPassed()} />,
+    );
+    await user.click(screen.getByRole("button", { name: /back/i }));
+    expect(onPassed).toHaveBeenCalledTimes(1);
+  });
 });

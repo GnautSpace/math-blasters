@@ -4,9 +4,11 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { readFileSync } from "node:fs";
+import { api } from "../src/api/client";
 import { LessonStepper } from "../src/components/LessonStepper/LessonStepper";
 import { AuthContext } from "../src/context/AuthContext";
 import type { AuthContextValue } from "../src/context/AuthContext";
+import { ProgressProvider } from "../src/context/ProgressContext";
 import { getModule } from "../src/content";
 import type { PageLesson } from "../src/content/types";
 import { Homepage } from "../src/pages/Homepage";
@@ -66,6 +68,8 @@ function blockNavigation(event: MouseEvent) {
 beforeEach(() => {
   sessionStorage.clear();
   window.addEventListener("click", blockNavigation);
+  // Signed in, the routes ask for progress; left pending so no test reaches the network or updates late.
+  vi.spyOn(api, "getProgress").mockReturnValue(new Promise(() => {}));
 });
 
 afterEach(() => {
@@ -92,7 +96,9 @@ describe("SignInPrompt on the module list and module page", () => {
     render(
       <AuthContext.Provider value={authValue({ loading: true })}>
         <MemoryRouter>
-          <Homepage />
+          <ProgressProvider>
+            <Homepage />
+          </ProgressProvider>
         </MemoryRouter>
       </AuthContext.Provider>,
     );

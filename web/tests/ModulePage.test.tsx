@@ -1,8 +1,9 @@
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { api } from "../src/api/client";
 import { SettledAppRoutes } from "./helpers/app";
 import { getModule } from "../src/content";
 import { expectNoA11yViolations } from "./helpers/a11y";
@@ -21,6 +22,15 @@ function renderAt(path: string, account: Account | null = null) {
 }
 
 describe("ModulePage", () => {
+  // Signed in, the page asks for progress; stubbed so no test reaches the network.
+  beforeEach(() => {
+    vi.spyOn(api, "getProgress").mockResolvedValue([]);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   it("renders the module's title, description and lesson count", () => {
     renderAt(modulePath);
 

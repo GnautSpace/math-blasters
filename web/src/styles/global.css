@@ -602,7 +602,8 @@ a.btn {
   font-size: 0.9rem;
 }
 
-.lesson-card__marks {
+.lesson-card__marks,
+.module-card__marks {
   grid-area: marks;
   display: flex;
   align-items: center;
@@ -611,7 +612,6 @@ a.btn {
 
 /* The module list's lesson count sits where a lesson's badge does. */
 .module-card__count {
-  grid-area: marks;
   display: flex;
   color: var(--text-muted);
   font-size: 0.875rem;
@@ -654,6 +654,22 @@ a.btn {
   border-style: dashed;
 }
 
+/* --- the completion mark: text and a check, never colour alone --- */
+
+.completed-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: 0.8rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--success);
+}
+
+.completed-mark__glyph {
+  flex: none;
+}
+
 @media (max-width: 30rem) {
   .lesson-card.card,
   .module-card.card {
@@ -665,7 +681,7 @@ a.btn {
   }
 
   .lesson-card__marks,
-  .module-card__count {
+  .module-card__marks {
     justify-content: flex-start;
   }
 }

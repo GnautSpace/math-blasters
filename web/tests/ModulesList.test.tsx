@@ -3,7 +3,17 @@ import { ModulesList } from "../src/components/ModulesList";
 import * as content from '../src/content';
 import { expectNoA11yViolations } from "./helpers/a11y";
 import { MemoryRouter } from "react-router-dom";
+import type { ReactNode } from "react";
 import { vi, afterEach } from "vitest";
+import { AuthProvider } from "../src/context/AuthContext";
+import { ProgressProvider } from "../src/context/ProgressContext";
+
+// Signed out and settled, so no progress is fetched.
+const Providers = ({ children }: { children: ReactNode }) => (
+    <AuthProvider initialLoading={false}>
+        <ProgressProvider>{children}</ProgressProvider>
+    </AuthProvider>
+);
 
 describe("ModulesList checks", () => {
     afterEach(() => {
@@ -13,7 +23,7 @@ describe("ModulesList checks", () => {
     it("test list view", () => {
         const { container } = render(
         <MemoryRouter>
-            <ModulesList />
+            <Providers><ModulesList /></Providers>
         </MemoryRouter>
     );
         expect(container).toBeInTheDocument();
@@ -24,7 +34,7 @@ describe("ModulesList checks", () => {
     it("lists modules in authored order, like the module page's lessons", () => {
         render(
             <MemoryRouter>
-                <ModulesList />
+                <Providers><ModulesList /></Providers>
             </MemoryRouter>
         );
         const modules = content.getModules();
@@ -40,7 +50,7 @@ describe("ModulesList checks", () => {
     it("makes each module one link carrying its lesson count", () => {
         render(
             <MemoryRouter>
-                <ModulesList />
+                <Providers><ModulesList /></Providers>
             </MemoryRouter>
         );
         const modules = content.getModules();
@@ -61,7 +71,7 @@ describe("ModulesList checks", () => {
 
         render(
             <MemoryRouter>
-                <ModulesList />
+                <Providers><ModulesList /></Providers>
             </MemoryRouter>
         );
         expect(screen.getByText("No modules found.")).toBeInTheDocument();
@@ -70,7 +80,7 @@ describe("ModulesList checks", () => {
     it("check a11y on list view", async () => {
         const { container } = render(
             <MemoryRouter>
-                <ModulesList />
+                <Providers><ModulesList /></Providers>
             </MemoryRouter>
         );
         await expectNoA11yViolations(container);
