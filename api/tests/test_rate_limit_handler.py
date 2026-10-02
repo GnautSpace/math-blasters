@@ -12,7 +12,7 @@ def test_rate_limit_exceeded_envelope():
     @limiter.limit("1/minute")
     def throwaway_route(request: Request):
         return {"status": "ok"}
-    
+
     with TestClient(app) as client:
         # First request succeeds
         res1 = client.get("/api/test-throwaway-rate-limit")
