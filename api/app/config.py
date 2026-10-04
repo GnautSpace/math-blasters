@@ -1,6 +1,7 @@
 """Application settings, read from the environment (or a local .env file)."""
 
 from functools import lru_cache
+from pathlib import Path
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -46,6 +47,11 @@ class Settings(BaseSettings):
     # Google OAuth credentials (provider registered only when both are present).
     google_client_id: str | None = None
     google_client_secret: str | None = None
+
+    # Generated content manifest used to validate completion lesson slugs.
+    content_manifest_path: str = str(
+        Path(__file__).resolve().parents[2] / "content" / "manifest.json"
+    )
 
     @property
     def cors_origin_list(self) -> list[str]:

@@ -70,3 +70,15 @@ class OAuthIdentity(Base):
     __table_args__ = (
         UniqueConstraint("provider", "provider_account_id", name="uq_provider_provider_account_id"),
     )
+
+
+class Completion(Base):
+    __tablename__ = "completions"
+
+    account_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("accounts.id", ondelete="CASCADE"), primary_key=True
+    )
+    lesson_slug: Mapped[str] = mapped_column(String(255), primary_key=True)
+    completed_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )

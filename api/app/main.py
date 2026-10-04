@@ -23,11 +23,12 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 
 from app.config import Settings, get_settings
+from app.content_manifest import load_lesson_slugs
 from app.learner import learner_rate_key
 from app.providers import get_provider, register
 from app.providers.github import GithubProvider
 from app.providers.google import GoogleProvider
-from app.routers import auth, health
+from app.routers import auth, completions, health, progress
 from app.schemas import ErrorDetail, ErrorEnvelope
 
 
@@ -187,6 +188,10 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
         expose_headers=["X-Request-ID"],
     )
+
+    # Store the lessons slugs as part of app.state
+    app.state.lesson_slugs = load_lesson_slugs(settings.content_manifest_path)
+
     # Add last so this middleware is outermost and logs CORS preflight responses.
     app.add_middleware(RequestLoggingMiddleware)
 
@@ -200,6 +205,11 @@ def create_app() -> FastAPI:
     limiter = Limiter(key_func=learner_rate_key)
     app.state.limiter = limiter
     app.include_router(auth.router, prefix="/api")
+
+    app.include_router(completions.router, prefix="/api")
+
+    # Register the progress router
+    app.include_router(progress.router, prefix="/api")
 
     return app
 
