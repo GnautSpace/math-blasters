@@ -101,6 +101,9 @@ jobs:
       - name: Check content manifest
         run: npm run content:manifest -- --check
 
+      - name: Validate content
+        run: npm run content:validate
+
       - name: Test
         run: npm test
 
