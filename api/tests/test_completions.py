@@ -140,10 +140,13 @@ def test_completions_rate_limited(client, session, monkeypatch):
     }
 
 
-def test_progress_and_health_never_limited(client, session):
+def test_progress_and_health_never_limited(client, session, monkeypatch):
+    from app.config import get_settings
+
+    monkeypatch.setattr(get_settings(), "completions_rate_limit", "1/minute")
     attach_signed_in_account(client, session, email="health@example.com", token="d" * 43)
 
-    for _ in range(5):
+    for _ in range(25):
         health_response = client.get("/api/health")
         progress_response = client.get("/api/progress")
         assert health_response.status_code == 200
