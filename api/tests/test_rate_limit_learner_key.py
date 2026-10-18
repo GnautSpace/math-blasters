@@ -1,19 +1,10 @@
 import secrets
 
-import pytest
 from fastapi import Request
 from fastapi.testclient import TestClient
 
-from app.learner import LEARNER_COOKIE_NAME, LEARNER_TOKEN_BYTES, learner_rate_key, limiter
+from app.learner import LEARNER_COOKIE_NAME, LEARNER_TOKEN_BYTES, learner_rate_key
 from app.main import create_app
-
-
-@pytest.fixture(autouse=True)
-def reset_limiter():
-    """Reset the global rate limiter storage before and after each test."""
-    limiter.reset()
-    yield
-    limiter.reset()
 
 
 def test_rate_limit_by_learner_cookie():

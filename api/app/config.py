@@ -34,11 +34,10 @@ class Settings(BaseSettings):
     def validate_rate_limit(cls, v: str) -> str:
         try:
             parsed = parse_many(v)
-            for limit in parsed:
-                if limit.amount < 1:
-                    raise ValueError("Rate limit amount must be at least 1")
-        except Exception as e:
+        except ValueError as e:
             raise ValueError(f"Invalid rate limit format '{v}': {e}") from e
+        if any(limit.amount < 1 for limit in parsed):
+            raise ValueError(f"Rate limit amount must be at least 1, got '{v}'")
         return v
 
     # Environment mode: 'development', 'test', 'production'

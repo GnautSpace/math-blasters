@@ -1,5 +1,6 @@
 import pytest
 
+from app.config import get_settings
 from app.models import Completion, Learner
 from tests.helpers import attach_signed_in_account, row_count
 
@@ -119,8 +120,6 @@ def test_invalid_completion_payload_returns_422(client, session, payload):
 
 
 def test_completions_rate_limited(client, session, monkeypatch):
-    from app.config import get_settings
-
     monkeypatch.setattr(get_settings(), "completions_rate_limit", "1/minute")
 
     attach_signed_in_account(client, session, email="ratelimit@example.com", token="c" * 43)
@@ -141,8 +140,6 @@ def test_completions_rate_limited(client, session, monkeypatch):
 
 
 def test_progress_and_health_never_limited(client, session, monkeypatch):
-    from app.config import get_settings
-
     monkeypatch.setattr(get_settings(), "completions_rate_limit", "1/minute")
     attach_signed_in_account(client, session, email="health@example.com", token="d" * 43)
 

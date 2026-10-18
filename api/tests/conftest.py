@@ -15,9 +15,6 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from app.config import get_settings
-from app.learner import limiter
-
 DEFAULT_TEST_DB = "postgresql+psycopg://mathblasters:mathblasters@localhost:5433/mathblasters_test"
 # Overwritten, not `setdefault`-ed: the fixtures below drop_all/create_all whatever
 # DATABASE_URL points at, and inside the `api` container that variable is already
@@ -26,7 +23,9 @@ os.environ["DATABASE_URL"] = os.environ.get("TEST_DATABASE_URL", DEFAULT_TEST_DB
 os.environ.setdefault("ENV", "test")
 os.environ.setdefault("COOKIE_SECURE", "false")
 
+from app.config import get_settings  # noqa: E402
 from app.db import get_session  # noqa: E402
+from app.learner import limiter  # noqa: E402
 from app.main import create_app  # noqa: E402
 from app.models import Base  # noqa: E402
 

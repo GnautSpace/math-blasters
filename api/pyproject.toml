@@ -12,6 +12,7 @@ dependencies = [
     "pydantic>=2.9",
     "pydantic-settings>=2.6",
     "slowapi>=0.1.9",
+    "limits>=5.0",
     "httpx2>=2.0.0",
     "pyjwt[crypto]>=2.10.1",
     "itsdangerous>=2.2.0",
