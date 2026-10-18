@@ -23,7 +23,9 @@ os.environ["DATABASE_URL"] = os.environ.get("TEST_DATABASE_URL", DEFAULT_TEST_DB
 os.environ.setdefault("ENV", "test")
 os.environ.setdefault("COOKIE_SECURE", "false")
 
+from app.config import get_settings  # noqa: E402
 from app.db import get_session  # noqa: E402
+from app.learner import limiter  # noqa: E402
 from app.main import create_app  # noqa: E402
 from app.models import Base  # noqa: E402
 
@@ -71,3 +73,14 @@ def client(session: Session) -> Iterator[TestClient]:
     with TestClient(app) as test_client:
         yield test_client
     app.dependency_overrides.clear()
+
+
+@pytest.fixture(autouse=True)
+def reset_limiter_and_settings():
+    """Reset the global rate limiter storage
+    clear cached settings before and after each test."""
+    limiter.reset()
+    get_settings.cache_clear()
+    yield
+    limiter.reset()
+    get_settings.cache_clear()
